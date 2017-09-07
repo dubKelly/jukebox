@@ -9,7 +9,7 @@ var Keys = require("./server/models/keys");
 var app = express();
 var router = express.Router();
 
-var port = process.env.API_PORT || 3002;
+var port = process.env.API_PORT || 8080;
 
 /* DB CONFIG */
 var promise = mongoose.connect("mongodb://localhost/spotify", {
@@ -42,12 +42,12 @@ router.route("/keys").get(function(req, res) {
 		res.json(keys)
 	});
 }).post(function(req, res) {
-	var user = new Keys();
+	var keys = new Keys();
 
-	user.client_id = req.body.client_id;
-	user.client_secret = req.body.client_secret;
+	keys.client_id = req.body.client_id;
+	keys.client_secret = req.body.client_secret;
 
-	user.save(function(err) {
+	keys.save(function(err) {
 		if (err) {
 			res.send(err);
 		}

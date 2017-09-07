@@ -7,24 +7,24 @@ class App extends Component {
 	constructor() {
 		super();
 		this.state = {
-			serverUrl: "http://localhost:3002/api/keys",
+			serverUrl: "http://localhost:8080/api/keys",
 			spotify: {
 				keys: [],
 				authUrl: "https://accounts.spotify.com/authorize",
 				apiUrl: "https://api.spotify.com/v1",
 			},
 			searchValue: "",
-			data: []
+			data: {}
 		};
 	}
 
 	handleChange = (e) => {
-		console.log(this.state.spotify.keys);
+		console.log(this.state.spotify.keys[0].client_id);
 	}
 
 	loadKeys() {
 		axios.get(this.state.serverUrl).then(res => {
-			this.setState({ data: res });
+			this.setState({ spotify: { keys: res.data }});
 		});
 	}
 
