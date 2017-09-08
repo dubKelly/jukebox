@@ -3,9 +3,11 @@
 var express = require("express");
 var queryString = require("query-string");
 var request = require("request");
+var mongoose = require("mongoose");
+var Keys = require("./server/models/keys");
 
-var client_id = "b58fb769ae2c44f2a2072e027bd7fa67";
-var client_secret = "6e13e849046949e28390b9e129d52e99";
+var client_id = "";
+var client_secret = "";
 var redirect_uri = "http://localhost:8080/api/callback";
 
 
@@ -14,6 +16,25 @@ var app = express();
 var router = express.Router();
 
 var port = process.env.API_PORT || 8080;
+
+/* DB CONFIG */
+var promise = mongoose.connect("mongodb://localhost/jukebox", {
+	useMongoClient: true
+});
+
+Keys.findOne({}, [ "client_id" ], function(err, key) {
+	if (err) {
+		res.send(err);
+	}
+	client_id = key.client_id;
+});
+
+Keys.findOne({}, [ "client_secret" ], function(err, key) {
+	if (err) {
+		res.send(err);
+	}
+	client_secret = key.client_secret;
+});
 
 /* ROUTES */
 router.get("/login", function(req, res) {
