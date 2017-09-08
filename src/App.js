@@ -1,42 +1,31 @@
-import React, { Component } from 'react';
-import axios from "axios";
+import React from "react";
 
-import Search from "./components/Search";
+import Connect from "./components/Connect";
 
-class App extends Component {
+export default class App extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			serverUrl: "http://localhost:8080/api/keys",
-			spotify: {
-				keys: [],
-				authUrl: "https://accounts.spotify.com/authorize",
-				apiUrl: "https://api.spotify.com/v1",
-			},
-			searchValue: "",
-			data: {}
-		};
-	}
-
-	handleChange = (e) => {
-		console.log(this.state.spotify.keys[0].client_id);
-	}
-
-	loadKeys() {
-		axios.get(this.state.serverUrl).then(res => {
-			this.setState({ spotify: { keys: res.data }});
-		});
+			tokens: {}
+		}
 	}
 
 	componentDidMount() {
-		this.loadKeys();
+    let pathParams = {};
+    let e;
+    let r = /([^&;=]+)=?([^&;]*)/g;
+    let q = window.location.pathname.substring(1);
+    while ( e = r.exec(q)) {
+       pathParams[e[1]] = decodeURIComponent(e[2]);
+    }
+    this.setState({ tokens: pathParams });
 	}
 
-	render() {
+	render() { 
 		return (
-			<Search handleChange={this.handleChange.bind(this)}/>
+			<div>
+			<Connect />
+			</div>
 		);
 	}
 }
-
-export default App;

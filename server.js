@@ -1,9 +1,13 @@
-"use strict";
+'use strict';
 
 var express = require("express");
-var bodyParser = require("body-parser");
-var mongoose = require("mongoose");
-var Keys = require("./server/models/keys");
+var queryString = require("query-string");
+var request = require("request");
+
+var client_id = "b58fb769ae2c44f2a2072e027bd7fa67";
+var client_secret = "6e13e849046949e28390b9e129d52e99";
+var redirect_uri = "http://localhost:8080/api/callback";
+
 
 /* INIT */
 var app = express();
@@ -11,47 +15,48 @@ var router = express.Router();
 
 var port = process.env.API_PORT || 8080;
 
-/* DB CONFIG */
-var promise = mongoose.connect("mongodb://localhost/spotify", {
-	useMongoClient: true
-});
-
-/* MIDDLEWARE */
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-app.use(function(req, res, next) {
- res.setHeader("Access-Control-Allow-Origin", "*");
- res.setHeader("Access-Control-Allow-Credentials", "true");
- res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
- res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
- res.setHeader("Cache-Control", "no-cache");
- next();
-});
-
 /* ROUTES */
-router.get("/", function(req, res) {
-	res.json("Welcome!");
+router.get("/login", function(req, res) {
+	var authEndpoint = "https://accounts.spotify.com/authorize/?"
+	var authQuery = queryString.stringify({
+		client_id: client_id,
+		response_type: "code",
+		redirect_uri: redirect_uri
+	});
+	res.redirect(authEndpoint + authQuery);
 });
 
-router.route("/keys").get(function(req, res) {
-	Keys.find(function(err, keys) {
-		if (err) {
-			res.send(err);
+router.get("/callback", function(req, res) {
+	var code = req.query.code;
+	
+	var authRequest = {
+		url: "https://accounts.spotify.com/api/token",
+		form: {
+			grant_type: "authorization_code",
+			code: code,
+			redirect_uri: redirect_uri
+		},
+		headers: {
+			"Authorization": "Basic " + (new Buffer(client_id + ":" + client_secret).toString("base64"))
 		}
-		res.json(keys)
-	});
-}).post(function(req, res) {
-	var keys = new Keys();
+	};
 
-	keys.client_id = req.body.client_id;
-	keys.client_secret = req.body.client_secret;
+	request.post(authRequest, function(error, response, body) {
+		if (!error && response.statusCode === 200) {
+			var json = JSON.parse(body);
+			
+			var token_type = json.token_type;
+			var access_token = json.access_token;
+			var refresh_token = json.refresh_token;
+			var expires_in = json.expires_in;
 
-	keys.save(function(err) {
-		if (err) {
-			res.send(err);
+			res.redirect("http://localhost:3000/" + queryString.stringify({
+				token_type: token_type,
+				access_token: access_token,
+				refresh_token: refresh_token,
+				expires_in: expires_in
+			}));
 		}
-		res.json("User added");
 	});
 });
 
@@ -60,4 +65,4 @@ app.use("/api", router);
 /* START SERVER */
 app.listen(port, function() {
 	console.log(`Server running on port ${port}`);
-});
+})
