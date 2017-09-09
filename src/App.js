@@ -11,13 +11,12 @@ export default class App extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			tokens: {},
-			profile: {}
+			tokens: {}
 		}
 	}
 
 	setTokens(tokens) {
-		this.setState({ tokens })
+		this.setState({ tokens });
 	}
 
 	render() { 
@@ -27,6 +26,7 @@ export default class App extends React.Component {
 					<Route exact path="/" component={ Home } />
 					<Route path="/profile" render={(props) => (
 						<Profile {...props}
+							tokens={ this.state.tokens }
 							setTokens={ this.setTokens.bind(this) }
 						/>
 					)}/>
