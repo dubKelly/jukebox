@@ -42,6 +42,7 @@ router.get("/login", function(req, res) {
 	var authQuery = queryString.stringify({
 		client_id: client_id,
 		response_type: "code",
+		scope: "user-library-read",
 		redirect_uri: redirect_uri
 	});
 	res.redirect(authEndpoint + authQuery);
@@ -71,7 +72,7 @@ router.get("/callback", function(req, res) {
 			var refresh_token = json.refresh_token;
 			var expires_in = json.expires_in;
 
-			res.redirect("http://localhost:3000/" + queryString.stringify({
+			res.redirect("http://localhost:3000/profile/" + queryString.stringify({
 				token_type: token_type,
 				access_token: access_token,
 				refresh_token: refresh_token,
