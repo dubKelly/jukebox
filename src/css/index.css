@@ -1,0 +1,6 @@
+html, body, #root, .page {
+	height: 100%;
+}
+.dark {
+	background-color: #0d3d56;
+}
