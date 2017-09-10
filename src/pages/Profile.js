@@ -1,6 +1,9 @@
 import React from "react";
 import $ from "jquery";
 
+import Greeting from "../components/Greeting";
+import Playlists from "../components/Playlists";
+
 export default class Profile extends React.Component {
 	constructor() {
 		super();
@@ -49,11 +52,10 @@ export default class Profile extends React.Component {
 				let playlists = [];
 
 				for (let i = items.length - 1; i >= 0; i--) {
-					console.log(items[i]);
 					let key = `playlist${i}`;
 					let playlist =	<div key={key}>
 														<img 
-															src={ items[i].images[1].url }
+															src={ items[i].images[2].url }
 															alt=""
 															data-href={ items[i].href }
 															onClick={ this.getTracks } />
@@ -71,6 +73,11 @@ export default class Profile extends React.Component {
 	}
 
 	getTracks(e) {
+
+    console.log(this.state.profile);
+    console.log(this.state.playlists);
+    console.log(this.state.tracks);
+
 		let targetHref = e.target.getAttribute("data-href");
 		let token_type = this.props.tokens.token_type;
 		let access_token = this.props.tokens.access_token;
@@ -88,8 +95,9 @@ export default class Profile extends React.Component {
 
 	render() {
 		return (
-			<div>
-				{ this.state.playlists }
+			<div className="page profile dark">
+				<Greeting name={ this.state.profile.id } />
+				<Playlists playlists={ this.state.playlists } />
 			</div>
 		);
 	}

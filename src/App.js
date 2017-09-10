@@ -22,7 +22,7 @@ export default class App extends React.Component {
 	render() { 
 		return (
 			<Router>
-				<div>
+				<div className="page">
 					<Route exact path="/" component={ Home } />
 					<Route path="/profile" render={(props) => (
 						<Profile {...props}
