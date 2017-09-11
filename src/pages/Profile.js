@@ -58,7 +58,6 @@ export default class Profile extends React.Component {
 
 		  // refresh access_token
 		  let time = (parseInt(tokens.expires_in, 10) - 120) * 1000;	// 2 mins before token expires 
-		  console.log(time);
 		  setInterval(() => {
 		  	$.ajax({
 		  		url: "http://localhost:8080/api/refresh",
@@ -68,7 +67,6 @@ export default class Profile extends React.Component {
 		  		success: (response) => {
 		  			let data = JSON.parse(response);
 		  			let refresh_token = this.state.tokens.refresh_token;
-			  		console.log(data);
 			  		this.setState({
 			  			tokens: {
 			  				token_type: data.token_type,
@@ -135,10 +133,6 @@ export default class Profile extends React.Component {
 
 	getTracks(e) {
 
-    console.log(this.state.profile);
-    console.log(this.state.playlists);
-    console.log(this.state.tracks);
-
 		let targetHref = e.target.getAttribute("data-href");
 		let token_type = this.state.tokens.token_type;
 		let access_token = this.state.tokens.access_token;
@@ -156,8 +150,6 @@ export default class Profile extends React.Component {
 
 	nextTrack(e) {
 		e.preventDefault();
-		console.log(this.state.tokens.access_token);
-		console.log(this.state.tokens.token_type);
 
 		let token_type = this.state.tokens.token_type;
 		let access_token = this.state.tokens.access_token;
