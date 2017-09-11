@@ -1,9 +1,6 @@
 import React from "react";
 import $ from "jquery";
-
-import {
-	getMePlaylists
-} from "../modules/spotify/me.get"
+import axios from "axios";
 
 import Greeting from "../components/Greeting";
 import Playlists from "../components/Playlists";
@@ -21,6 +18,12 @@ export default class Profile extends React.Component {
 	}
 
 	componentDidMount() {
+		// refresh tokens on page refresh to sync expires_by with expires_in
+		if (window.performance.navigation.type === 1) {
+			window.location = "http://localhost:8080/api/login";
+		}
+
+		// pull tokens from pathname
     let pairs = window.location.pathname.substring(9).split("&");
     let result = {};
 
@@ -33,6 +36,26 @@ export default class Profile extends React.Component {
 
     this.setState({ tokens });
 
+    // send tokens to db
+    let expires_by = (new Date().getTime() / 1000) + parseInt(tokens.expires_in);
+
+    console.log(new Date().getTime() / 1000);
+    console.log(expires_by);
+
+    let user = {
+    	username: window.location.hostname,
+    	access_token: tokens.access_token,
+    	refresh_token: tokens.refresh_token,
+    	expires_by: expires_by
+    }
+
+    axios.post("http://localhost:8080/api/users", user).then(res => {
+    	console.log(res);
+    }).catch(err => {
+    	console.error(err);
+    })
+
+    // request profile info
     $.ajax({
     	url: "https://api.spotify.com/v1/me",
     	headers: {
@@ -43,14 +66,14 @@ export default class Profile extends React.Component {
 
     		let userHref = response.href;
 
-    		this.getMePlaylists(tokens, userHref);
+    		this.getPlaylists(tokens, userHref);
     	}
     });
 	}
     		
-	getPlaylists(tokens) {
+	getPlaylists(tokens, userHref) {
 		$.ajax({
-			url: `${this.state.profile.href}/playlists`,
+			url: `${userHref}/playlists`,
 			headers: {
 				"Authorization": `${tokens.token_type} ${tokens.access_token}`
 			},
@@ -86,8 +109,8 @@ export default class Profile extends React.Component {
     console.log(this.state.tracks);
 
 		let targetHref = e.target.getAttribute("data-href");
-		let token_type = this.props.tokens.token_type;
-		let access_token = this.props.tokens.access_token;
+		let token_type = this.state.tokens.token_type;
+		let access_token = this.state.tokens.access_token;
 		
 		$.ajax({
 			url: `${targetHref}/tracks`,

@@ -4,7 +4,10 @@ var express = require("express");
 var queryString = require("query-string");
 var request = require("request");
 var mongoose = require("mongoose");
+var bodyParser = require("body-parser");
+
 var Keys = require("./server/models/keys");
+var User = require("./server/models/users");
 
 var client_id = "";
 var client_secret = "";
@@ -36,7 +39,24 @@ Keys.findOne({}, [ "client_secret" ], function(err, key) {
 	client_secret = key.client_secret;
 });
 
+/* MIDDLEWARE */
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use(function(req, res, next) {
+	res.setHeader("Access-Control-Allow-Origin", "*");
+	res.setHeader("Access-Control-Allow-Credentials", "true");
+	res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
+	res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+
+	res.setHeader("Cache-Control", "no-cache");
+	next();
+});
+
 /* ROUTES */
+
+// auth
 router.get("/login", function(req, res) {
 	var authEndpoint = "https://accounts.spotify.com/authorize/?"
 	var authQuery = queryString.stringify({
@@ -78,6 +98,53 @@ router.get("/callback", function(req, res) {
 				refresh_token: refresh_token,
 				expires_in: expires_in
 			}));
+		}
+	});
+});
+
+// users
+router.route("/users").get(function(req, res) {
+	User.find(function(err, user) {
+		if (err) {
+			res.send(err);
+		}
+		res.json(user);
+	});
+}).post(function(req, res) {
+	var query = { username: req.body.username };
+
+	User.findOne(query, function(err, user) {
+		if (err) {
+			console.log(err)
+		}
+		if (!user) {
+			var newUser = new User();
+
+			newUser.username = req.body.username;
+			newUser.access_token = req.body.access_token;
+			newUser.refresh_token = req.body.refresh_token;
+			newUser.expires_by = req.body.expires_by;
+
+			newUser.save(function(err) {
+				if (err) {
+					res.send(err);
+				}
+				res.json("User added");
+			});
+		}
+		else {
+			user.set({
+				username: req.body.username,
+				access_token: req.body.access_token,
+				refresh_token: req.body.refresh_token,
+				expires_by: req.body.expires_by
+			});
+			user.save(function(err, updatedUser) {
+				if (err) {
+					console.log(err);
+				}
+				console.log(updatedUser);
+			});
 		}
 	});
 });
