@@ -22,53 +22,83 @@ export default class Profile extends React.Component {
 		if (window.performance.navigation.type === 1) {
 			window.location = "http://localhost:8080/api/login";
 		}
+		else {
+			// pull tokens from pathname
+		  let pairs = window.location.pathname.substring(9).split("&");
+		  let result = {};
 
-		// pull tokens from pathname
-    let pairs = window.location.pathname.substring(9).split("&");
-    let result = {};
+		  pairs.forEach((pair) => {
+		  	pair = pair.split("=");
+		  	result[pair[0]] = decodeURIComponent(pair[1] || "");
+		  });
 
-    pairs.forEach((pair) => {
-    	pair = pair.split("=");
-    	result[pair[0]] = decodeURIComponent(pair[1] || "");
-    });
+		  let tokens = JSON.parse(JSON.stringify(result));
 
-    let tokens = JSON.parse(JSON.stringify(result));
+		  this.setState({ tokens }, () => {
+		  	// send tokens to db
+			  this.postTokens();
+		  });
 
-    this.setState({ tokens });
 
-    // send tokens to db
-    let expires_by = (new Date().getTime() / 1000) + parseInt(tokens.expires_in);
+		  // request profile info
+		  $.ajax({
+		  	url: "https://api.spotify.com/v1/me",
+		  	headers: {
+		  		"Authorization": `${tokens.token_type} ${tokens.access_token}`
+		  	},
+		  	success: (response) => {
+		  		this.setState({ profile: response });
 
-    console.log(new Date().getTime() / 1000);
-    console.log(expires_by);
+		  		let userHref = response.href;
 
-    let user = {
-    	username: window.location.hostname,
-    	access_token: tokens.access_token,
-    	refresh_token: tokens.refresh_token,
-    	expires_by: expires_by
-    }
+		  		this.getPlaylists(tokens, userHref);
+		  	}
+		  });
 
-    axios.post("http://localhost:8080/api/users", user).then(res => {
-    	console.log(res);
-    }).catch(err => {
-    	console.error(err);
-    })
+		  // refresh access_token
+		  let time = (parseInt(tokens.expires_in, 10) - 120) * 1000;	// 2 mins before token expires 
+		  console.log(time);
+		  setInterval(() => {
+		  	$.ajax({
+		  		url: "http://localhost:8080/api/refresh",
+		  		data: {
+		  			refresh_token: tokens.refresh_token
+		  		},
+		  		success: (response) => {
+		  			let data = JSON.parse(response);
+		  			let refresh_token = this.state.tokens.refresh_token;
+			  		console.log(data);
+			  		this.setState({
+			  			tokens: {
+			  				token_type: data.token_type,
+			  				access_token: data.access_token,
+			  				refresh_token: refresh_token,
+			  				expires_in: data.expires_in
+			  			}
+			  		});
+			  		this.postTokens();
+			  	}
+		  	});
+		  }, time);
+		}
+	}
 
-    // request profile info
-    $.ajax({
-    	url: "https://api.spotify.com/v1/me",
-    	headers: {
-    		"Authorization": `${tokens.token_type} ${tokens.access_token}`
-    	},
-    	success: (response) => {
-    		this.setState({ profile: response });
+	postTokens() {
+		let expires_by = (new Date().getTime() / 1000) + parseInt(this.state.tokens.expires_in, 10);
 
-    		let userHref = response.href;
+	  let user = {
+	  	username: window.location.hostname,
+	  	access_token: this.state.tokens.access_token,
+	  	refresh_token: this.state.tokens.refresh_token,
+	  	expires_by: expires_by
+	  }
 
-    		this.getPlaylists(tokens, userHref);
-    	}
-    });
+	  axios.post("http://localhost:8080/api/users", user).then(res => {
+	  	// kill load animation
+	  	console.log("db updated");
+	  }).catch(err => {
+	  	console.error(err);
+	  });	
 	}
     		
 	getPlaylists(tokens, userHref) {

@@ -102,6 +102,27 @@ router.get("/callback", function(req, res) {
 	});
 });
 
+router.get("/refresh", function(req, res) {
+	var refresh_token = req.query.refresh_token;
+	
+	var authRequest = {
+		url: "https://accounts.spotify.com/api/token",
+		form: {
+			grant_type: "refresh_token",
+			refresh_token: refresh_token
+		},
+		headers: {
+			"Authorization": "Basic " + (new Buffer(client_id + ":" + client_secret).toString("base64"))
+		}
+	}
+
+	request.post(authRequest, function(error, response, body) {
+		if (!error && response.statusCode === 200) {
+			res.json(body);
+		}
+	});
+});
+
 // users
 router.route("/users").get(function(req, res) {
 	User.find(function(err, user) {
@@ -141,9 +162,9 @@ router.route("/users").get(function(req, res) {
 			});
 			user.save(function(err, updatedUser) {
 				if (err) {
-					console.log(err);
+					res.send(err);
 				}
-				console.log(updatedUser);
+				res.json(updatedUser);
 			});
 		}
 	});
