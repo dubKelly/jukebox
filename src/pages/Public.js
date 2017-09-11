@@ -11,16 +11,22 @@ export default class Public extends React.Component {
 	}
 
 	componentDidMount() {
-		axios.get("http://localhost:8080/api/users").then(res => {
-			this.setState({ tokens: res.data[0] });
+		let user = {
+			username: window.location.hostname
+		}
+
+		axios.post("http://localhost:8080/api/public", user).then(res => {
+			console.log(res);
+			this.setState({ tokens: res.data }, () => {
+				// kill loading animation
+				console.log(this.state.tokens);
+			});
 		});
 	}
 
 	nextTrack(e) {
 		e.preventDefault();
-		console.log(this.state.tokens);
 
-		let token_type = this.state.tokens.token_type;
 		let access_token = this.state.tokens.access_token;
 
 		$.ajax({

@@ -125,6 +125,7 @@ router.get("/refresh", function(req, res) {
 
 // users
 router.route("/users").get(function(req, res) {
+
 	User.find(function(err, user) {
 		if (err) {
 			res.send(err);
@@ -169,6 +170,18 @@ router.route("/users").get(function(req, res) {
 		}
 	});
 });
+
+router.route("/public").post(function(req, res) {
+	var query = { username: req.body.username };
+	console.log(query);
+	
+	User.findOne(query, function(err, user) {
+		if (err) {
+			res.send(err);
+		}
+		res.json(user);
+	});
+})
 
 app.use("/api", router);
 
