@@ -1,6 +1,10 @@
 import React from "react";
 import $ from "jquery";
 
+import {
+	getMePlaylists
+} from "../modules/spotify/me.get"
+
 import Greeting from "../components/Greeting";
 import Playlists from "../components/Playlists";
 
@@ -8,6 +12,7 @@ export default class Profile extends React.Component {
 	constructor() {
 		super();
 		this.state = {
+			tokens: {},
 			profile: {},
 			playlists: [],
 			tracks: {}
@@ -26,7 +31,7 @@ export default class Profile extends React.Component {
 
     let tokens = JSON.parse(JSON.stringify(result));
 
-    this.props.setTokens(tokens);
+    this.setState({ tokens });
 
     $.ajax({
     	url: "https://api.spotify.com/v1/me",
@@ -36,7 +41,9 @@ export default class Profile extends React.Component {
     	success: (response) => {
     		this.setState({ profile: response });
 
-    		this.getPlaylists(tokens);
+    		let userHref = response.href;
+
+    		this.getMePlaylists(tokens, userHref);
     	}
     });
 	}

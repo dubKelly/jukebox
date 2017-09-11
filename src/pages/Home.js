@@ -14,7 +14,7 @@ export default class Home extends React.Component {
 
 	render() {
 		return (
-			<div className="page">
+			<div className="page dark">
 				<Connect text={ this.state.signInText } />
 			</div>
 		);
