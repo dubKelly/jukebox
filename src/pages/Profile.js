@@ -47,6 +47,7 @@ export default class Profile extends React.Component {
 		  		"Authorization": `${tokens.token_type} ${tokens.access_token}`
 		  	},
 		  	success: (response) => {
+		  		console.log(response);
 		  		this.setState({ profile: response });
 
 		  		let userHref = response.href;
@@ -153,11 +154,32 @@ export default class Profile extends React.Component {
 		});
 	}
 
+	nextTrack(e) {
+		e.preventDefault();
+		console.log(this.state.tokens.access_token);
+		console.log(this.state.tokens.token_type);
+
+		let token_type = this.state.tokens.token_type;
+		let access_token = this.state.tokens.access_token;
+
+		$.ajax({
+			method: "POST",
+	  	url: "https://api.spotify.com/v1/me/player/next",
+	  	headers: {
+	  		"Authorization": `${token_type} ${access_token}`
+	  	},
+	  	success: () => {
+	  		console.log("next");
+	  	}
+	  });
+	}
+
 	render() {
 		return (
 			<div className="page profile dark">
 				<Greeting name={ this.state.profile.id } />
 				<Playlists playlists={ this.state.playlists } />
+				<button onClick={ this.nextTrack.bind(this) }>Next</button>
 			</div>
 		);
 	}
