@@ -11,10 +11,12 @@ export default class Profile extends React.Component {
 		this.state = {
 			tokens: {},
 			profile: {},
-			playlists: [],
+			playlists: {},
+			playlistsJsx: [],
 			tracks: {}
 		}
 		this.getTracks = this.getTracks.bind(this);
+		this.getPlaylists = this.getPlaylists.bind(this);
 	}
 
 	componentDidMount() {
@@ -37,23 +39,9 @@ export default class Profile extends React.Component {
 		  this.setState({ tokens }, () => {
 		  	// send tokens to db
 			  this.postTokens();
-		  });
 
-
-		  // request profile info
-		  $.ajax({
-		  	url: "https://api.spotify.com/v1/me",
-		  	headers: {
-		  		"Authorization": `${tokens.token_type} ${tokens.access_token}`
-		  	},
-		  	success: (response) => {
-		  		console.log(response);
-		  		this.setState({ profile: response });
-
-		  		let userHref = response.href;
-
-		  		this.getPlaylists(tokens, userHref);
-		  	}
+			  // get profile info
+		  	this.ajaxGet("https://api.spotify.com/v1/me", "profile", this.getPlaylists);
 		  });
 
 		  // refresh access_token
@@ -99,57 +87,77 @@ export default class Profile extends React.Component {
 	  	console.error(err);
 	  });	
 	}
-    		
-	getPlaylists(tokens, userHref) {
-		$.ajax({
-			url: `${userHref}/playlists`,
-			headers: {
-				"Authorization": `${tokens.token_type} ${tokens.access_token}`
-			},
-			success: (response) => {
-				const items = response.items;
-				let playlists = [];
 
-				for (let i = items.length - 1; i >= 0; i--) {
-					let key = `playlist${i}`;
-					let playlist =	<div key={key}>
-														<img 
-															src={ items[i].images[2].url }
-															alt=""
-															data-href={ items[i].href }
-															onClick={ this.getTracks } />
-														<h2
-															data-href={ items[i].href }
-															onClick={ this.getTracks }>
-															{ items[i].name }
-														</h2>
-													</div>
-					playlists.push(playlist);
-				}
-				this.setState({ playlists });
+	ajaxGet(url, target, then) {
+		let body = {
+			headers: { 
+				"Authorization": `${this.state.tokens.token_type} ${this.state.tokens.access_token}`
 			}
-		});
+		}
+
+	  axios.get(url, body).then(res => {
+		  let data = JSON.stringify(res.data);
+	  	this.setState(() => {
+		  	let state = JSON.parse(JSON.stringify(`{"${target}":${data}}`));
+
+	  		return (JSON.parse(state));
+	  	}, then);
+	  });
 	}
 
-	getTracks(e) {
+	getPlaylists() {
+		let url = this.state.profile.href + "/playlists";
+		this.ajaxGet(url, "playlists", this.renderPlaylists);
+	}
 
-		let targetHref = e.target.getAttribute("data-href");
-		let token_type = this.state.tokens.token_type;
-		let access_token = this.state.tokens.access_token;
+	renderPlaylists() {
+		const items = this.state.playlists.items;
+		let playlistsJsx = [];
+
+		for (let i = items.length - 1; i >= 0; i--) {
+			let key = `playlist${i}`;
+			let playlist =	<div key={key}>
+												<img 
+													src={ items[i].images[2].url }
+													alt=""
+													data-href={ items[i].href }
+													onClick={ this.getTracks } />
+												<h2
+													data-href={ items[i].href }
+													onClick={ this.getTracks }>
+													{ items[i].name }
+												</h2>
+											</div>
+			playlistsJsx.push(playlist);
+		}
+		this.setState({ playlistsJsx });
+	}
+
+    		
+
+	getTracks(e) {
+		let url = e.target.getAttribute("data-href") + "/tracks";
+		this.ajaxGet(url, "tracks", null);
+		// console.log(e);
+		// let targetHref = e.target.getAttribute("data-href");
+		// let token_type = this.state.tokens.token_type;
+		// let access_token = this.state.tokens.access_token;
 		
-		$.ajax({
-			url: `${targetHref}/tracks`,
-			headers: {
-				"Authorization": `${token_type} ${access_token}`
-			},
-			success: (response) => {
-				this.setState({ tracks: response });
-			}
-		});
+		// $.ajax({
+		// 	url: `${targetHref}/tracks`,
+		// 	headers: {
+		// 		"Authorization": `${token_type} ${access_token}`
+		// 	},
+		// 	success: (response) => {
+		// 		this.setState({ tracks: response });
+		// 	}
+		// });
 	}
 
 	nextTrack(e) {
 		e.preventDefault();
+
+		console.log(this.state.profile);
 
 		let token_type = this.state.tokens.token_type;
 		let access_token = this.state.tokens.access_token;
@@ -170,7 +178,7 @@ export default class Profile extends React.Component {
 		return (
 			<div className="page profile dark">
 				<Greeting name={ this.state.profile.id } />
-				<Playlists playlists={ this.state.playlists } />
+				<Playlists playlistsJsx={ this.state.playlistsJsx } />
 				<button onClick={ this.nextTrack.bind(this) }>Next</button>
 			</div>
 		);
