@@ -62,7 +62,7 @@ router.get("/login", function(req, res) {
 	var authQuery = queryString.stringify({
 		client_id: client_id,
 		response_type: "code",
-		scope: "user-library-read user-modify-playback-state",
+		scope: "user-library-read user-modify-playback-state user-read-recently-played",
 		redirect_uri: redirect_uri
 	});
 	res.redirect(authEndpoint + authQuery);
