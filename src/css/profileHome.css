@@ -1,0 +1,29 @@
+.profileHome {
+	height: 100%;
+}
+.recentlyPlayedContainer {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	min-width: calc(100% - 20px);
+	height: 176px;
+	padding: 0 10px;
+	text-align: center;
+	overflow: scroll;
+}
+.recentlyPlayed {
+	display: inline-block;
+	padding: 10px;
+}
+.recentlyPlayed img {
+	height: 120px;
+	width: 120px;
+}
+.recentlyPlayed h2 {
+	height: 33px;
+	width: 120px;
+	color: white;
+	text-align: center;
+	overflow: hidden;
+}

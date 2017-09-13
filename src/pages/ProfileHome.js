@@ -1,8 +1,15 @@
 import React from "react";
 
+import "../css/profileHome.css";
+
 const ProfileHome = (props) => {
-	console.log(props);
-	return <div className="profileHome">{ props.recentlyPlayedJsx }</div>;
+	return (
+		<div className="profileHome">
+			<div className="recentlyPlayedContainer">
+				{ props.recentlyPlayedJsx }	
+			</div>
+		</div>
+	);
 }
 
 export default ProfileHome;

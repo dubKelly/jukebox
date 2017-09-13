@@ -91,11 +91,12 @@ export default class Profile extends React.Component {
 	/*** RENDER ***/
 
 	render() {
+		console.log(window.location);
 		return (
 			<div className="page profile" style={this.styles}>
 				<div className="container profile">
 					<Menu />
-					<Route path="/" render={(props) =>
+					<Route exact path={window.location.pathname} render={(props) =>
 						<ProfileHome {...props} recentlyPlayedJsx={this.state.recentlyPlayedJsx} />
 					}/>
 				</div>
@@ -162,6 +163,7 @@ export default class Profile extends React.Component {
 				let key = `recentlyPlayedJsx${i}`;
 				let jsx =	<div
 										key={key}
+										className="recentlyPlayed"
 										data-url={res.data.external_urls.spotify}
 										onClick={this.openRecentlyPlayed}>
 										<img src={res.data.images[1].url} alt=""/>
@@ -169,8 +171,7 @@ export default class Profile extends React.Component {
 									</div>
 
 				recentlyPlayedJsx.push(jsx);
-				console.log(recentlyPlayedJsx);
-				this.setState({ recentlyPlayedJsx });
+				this.setState({ recentlyPlayedJsx }); // TODO: fire just once
 			});
 		}
 	}
