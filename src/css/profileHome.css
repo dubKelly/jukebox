@@ -1,20 +1,32 @@
 .profileHome {
 	height: 100%;
 }
+.profileHomeTitle {
+	color: white;
+	text-align: center;
+	font-size: 18px;
+	padding: 30px 0 0 0;
+}
 .recentlyPlayedContainer {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	min-width: calc(100% - 20px);
-	height: 176px;
+	height: 284px;
 	padding: 0 10px;
 	text-align: center;
-	overflow: scroll;
+	overflow: auto;
+	border-top: 1px solid #5b88f6;
+	border-bottom: 1px solid #5b88f6;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+.recentlyPlayedContainer::-webkit-scrollbar {
+	width: 0;
 }
 .recentlyPlayed {
 	display: inline-block;
-	padding: 10px;
+	padding: 40px 10px 64px 10px;
 }
 .recentlyPlayed img {
 	height: 120px;

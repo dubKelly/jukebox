@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
-import $ from "jquery";
+import queryString from "query-string";
+
+import Search from "../components/Search";
 
 export default class Public extends React.Component {
 	constructor() {
@@ -8,6 +10,7 @@ export default class Public extends React.Component {
 		this.state = {
 			tokens: {}
 		}
+		this.getSearchResults = this.getSearchResults.bind(this);
 	}
 
 	componentDidMount() {
@@ -24,26 +27,26 @@ export default class Public extends React.Component {
 		});
 	}
 
-	nextTrack(e) {
-		e.preventDefault();
-
-		let access_token = this.state.tokens.access_token;
-
-		$.ajax({
-			method: "POST",
-	  	url: "https://api.spotify.com/v1/me/player/next",
-	  	headers: {
-	  		"Authorization": `Bearer ${access_token}`
-	  	},
-	  	success: () => {
-	  		console.log("next");
-	  	}
-	  });
-	}
-
 	render() {
 		return (
-			<button onClick={ this.nextTrack.bind(this) }>Next</button>
+			<Search handleChange={this.getSearchResults} />
 		);
+	}
+
+	getSearchResults(e) {
+		let search = {
+			q: e.target.value
+		}
+		let query = queryString.stringify(search);
+		let url = `https://api.spotify.com/v1/search?${query}&type=artist,album,track&limit=2`;
+		let body = {
+			headers: { 
+				"Authorization": `Bearer ${this.state.tokens.access_token}`
+			}
+		}
+
+		axios.get(url, body).then(res => {
+			console.log(res);
+		});
 	}
 }

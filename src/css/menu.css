@@ -4,8 +4,9 @@
 	left: 0;
 	height: 100%;
 	width: 0;
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, 0.8);
 	transition: all 0.2s ease-in-out;
+	z-index: 1;
 }
 .menu.open {
 	width: 100%;

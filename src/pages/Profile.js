@@ -21,6 +21,8 @@ export default class Profile extends React.Component {
 			// playlists: {},
 			// playlistsJsx: [],
 			// tracks: {}
+
+			profileHomeTitle: "Recently Played"
 		}
 		this.getRecentlyPlayed = this.getRecentlyPlayed.bind(this);
 		// this.getPlaylists = this.getPlaylists.bind(this);
@@ -97,7 +99,9 @@ export default class Profile extends React.Component {
 				<div className="container profile">
 					<Menu />
 					<Route exact path={window.location.pathname} render={(props) =>
-						<ProfileHome {...props} recentlyPlayedJsx={this.state.recentlyPlayedJsx} />
+						<ProfileHome {...props}
+							recentlyPlayedJsx={this.state.recentlyPlayedJsx}
+							title={this.state.profileHomeTitle} />
 					}/>
 				</div>
 			</div>

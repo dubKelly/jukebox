@@ -6,6 +6,7 @@ const ProfileHome = (props) => {
 	return (
 		<div className="profileHome">
 			<div className="recentlyPlayedContainer">
+				<h2 className="profileHomeTitle">{props.title}</h2>
 				{ props.recentlyPlayedJsx }	
 			</div>
 		</div>
