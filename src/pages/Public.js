@@ -4,6 +4,8 @@ import queryString from "query-string";
 
 import Search from "../components/Search";
 
+import "../css/public.css";
+
 export default class Public extends React.Component {
 	constructor() {
 		super();
@@ -36,11 +38,16 @@ export default class Public extends React.Component {
 
 	render() {
 		return (
-			<Search 
-				handleChange={this.getSearchResults}
-				artists={this.state.artistsJsx}
-				albums={this.state.albumsJsx}
-				tracks={this.state.tracksJsx} />
+			<div className="page public">
+				<div className="container black">
+					<Search 
+						handleChange={this.getSearchResults}
+						artists={this.state.artistsJsx}
+						albums={this.state.albumsJsx}
+						tracks={this.state.tracksJsx}
+					/>
+				</div>
+			</div>
 		);
 	}
 
@@ -84,7 +91,8 @@ export default class Public extends React.Component {
 										<img 
 											src={smallImg}
 											alt=""
-											data-largeImg={largeImg} />
+											data-largeImg={largeImg}
+										/>
 										<h2>{artists[i].name}</h2>
 										<h3>{followers}</h3>
 									</div>
@@ -111,7 +119,8 @@ export default class Public extends React.Component {
 										<img 
 											src={smallImg}
 											alt=""
-											data-largeImg={largeImg} />
+											data-largeImg={largeImg}
+										/>
 										<h2>{albums[j].name}</h2>
 										<h3>{albums[j].artists[0].name}</h3>
 									</div>
@@ -127,7 +136,8 @@ export default class Public extends React.Component {
 										className="track"
 										key={key}
 										data-artistHref={tracks[k].artists[0].href}
-										data-trackHref={tracks[k].href}>
+										data-trackHref={tracks[k].href}
+									>
 										<h2>{tracks[k].name}</h2>
 										<h3>{tracks[k].artists[0].name}</h3>
 									</div>

@@ -94,7 +94,7 @@ export default class Profile extends React.Component {
 	render() {
 		return (
 			<div className="page profile" style={this.styles}>
-				<div className="container profile">
+				<div className="container black">
 					<Menu />
 					<Route exact path={window.location.pathname} render={(props) =>
 						<ProfileHome {...props}
@@ -169,7 +169,7 @@ export default class Profile extends React.Component {
 										className="recentlyPlayed"
 										data-url={res.data.external_urls.spotify}
 										onClick={this.openRecentlyPlayed}>
-										<img src={res.data.images[1].url} alt=""/>
+										<img src={res.data.images[0].url} alt=""/>
 										<h2>{res.data.name}</h2>
 									</div>
 

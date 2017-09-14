@@ -1,3 +1,9 @@
+.home {
+	background-image: url("../images/hendrixDidItFirst.jpg");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
 .signIn {
 	position: absolute;
 	top: 25px;
@@ -6,4 +12,16 @@
 	/*color: #f16c20;*/
 	font-size: 24px;
 	text-decoration: none;
+	text-transform: uppercase;
+	letter-spacing: 4px;
+}
+.homeTitle {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-66%, -50%);
+	font-family: "Tangerine", cursive;
+	font-size: 120px;
+	color: white;
+	opacity: 0.3;
 }

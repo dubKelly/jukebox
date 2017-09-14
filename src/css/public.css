@@ -1,0 +1,20 @@
+.public {
+	background-image: url("../images/hendrixDidItFirst.jpg");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.searchBar {
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 45px;
+	width: 80%;
+	border: 1px solid white;
+	background-color: transparent;
+	border-radius: 45px;
+	margin: 30px 0 15px 0;
+	padding: 0 20px;
+	font-size: 18px;
+	color: white;
+}
