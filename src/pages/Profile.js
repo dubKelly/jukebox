@@ -1,6 +1,5 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import $ from "jquery";
 import axios from "axios";
 
 import Menu from "../components/Menu";
@@ -93,7 +92,6 @@ export default class Profile extends React.Component {
 	/*** RENDER ***/
 
 	render() {
-		console.log(window.location);
 		return (
 			<div className="page profile" style={this.styles}>
 				<div className="container profile">
@@ -132,24 +130,25 @@ export default class Profile extends React.Component {
 		const items = this.state.recentlyPlayed.items;
 		let context = [];
 		let recentlyPlayedHref = [];
-
 		// sort throught recently-played response and
 		// check for duplicate artists/playlists
 		for (let i = 0; i <= items.length - 1; i++) {
-			if (context.includes(items[i].context.external_urls.spotify) === false) {
-				context.push(items[i].context.external_urls.spotify);
+			if (items[i].context != null) {
+				if (context.includes(items[i].context.external_urls.spotify) === false) {
+					context.push(items[i].context.external_urls.spotify);
 
-				if (items[i].context.type === "artist") {
-					recentlyPlayedHref.push(items[i].track.artists[0].href);
+					if (items[i].context.type === "artist") {
+						recentlyPlayedHref.push(items[i].track.artists[0].href);
 
-				}
-				else if (items[i].context.type === "playlist") {
-					recentlyPlayedHref.push(items[i].context.href);
+					}
+					else if (items[i].context.type === "playlist") {
+						recentlyPlayedHref.push(items[i].context.href);
 
+					}
+					else {
+					}
 				}
-				else {
-					console.log(items[i].context.type);
-				}
+				continue;
 			}
 			continue;
 		}
