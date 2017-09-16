@@ -1,8 +1,12 @@
 import React from "react";
+import { Route } from "react-router-dom";
 import axios from "axios";
 import queryString from "query-string";
 
-import Search from "../components/Search";
+import Search from "./Search";
+import Artists from "./Artists";
+import Albums from "./Albums";
+import Tracks from "./Tracks";
 
 import "../css/public.css";
 
@@ -11,9 +15,12 @@ export default class Public extends React.Component {
 		super();
 		this.state = {
 			tokens: {},
+
+			/* display */
 			artistsJsx: [],
 			albumsJsx: [],
-			tracksJsx: []
+			tracksJsx: [],
+			tracks: {}
 		}
 		this.getSearchResults = this.getSearchResults.bind(this);
 	}
@@ -25,8 +32,9 @@ export default class Public extends React.Component {
 
 		axios.post("http://localhost:8080/api/public", user).then(res => {
 			this.setState({ tokens: res.data }, () => {
-				let time = (parseInt(this.state.tokens.expires_by, 10) - (new Date().getTime() / 1000)) * 100;
-				console.log(time);
+				// refresh access_token
+				let time = (parseInt(this.state.tokens.expires_by, 10) - (new Date().getTime() / 1000)) * 1000;
+
 				setInterval(() => {
 					axios.post("http://localhost:8080/api/public", user).then(res => {
 						this.setState({ tokens: res.data });
@@ -38,16 +46,23 @@ export default class Public extends React.Component {
 		});
 	}
 
+	/*** RENDER ***/
+
 	render() {
 		return (
 			<div className="page public">
 				<div className="container black">
-					<Search 
-						handleChange={this.getSearchResults}
-						artists={this.state.artistsJsx}
-						albums={this.state.albumsJsx}
-						tracks={this.state.tracksJsx}
-					/>
+					<Route exact path="/public" render={(props) => 
+						<Search {...props}
+							handleChange={this.getSearchResults}
+							artists={this.state.artistsJsx}
+							albums={this.state.albumsJsx}
+							tracks={this.state.tracksJsx}
+						/>
+					}/>
+					<Route path="/artists" component={Artists}/>
+					<Route path="/albums" component={Albums}/>
+					<Route path="/tracks" component={Tracks}/>
 				</div>
 			</div>
 		);
@@ -56,6 +71,7 @@ export default class Public extends React.Component {
 	/*** CUSTOM ***/
 
 	getSearchResults(e) {
+		// request search results from spotify
 		let search = {
 			q: e.target.value
 		}
@@ -68,6 +84,8 @@ export default class Public extends React.Component {
 		}
 
 		axios.get(url, body).then(res => {
+			// create jsx objects from response data
+			// setState to jsx
 			const artists = res.data.artists.items;
 			const albums = res.data.albums.items;
 			const tracks = res.data.tracks.items;
@@ -79,6 +97,8 @@ export default class Public extends React.Component {
 			for (var i = 0; i < artists.length; i++) {
 				let key = `artist${i}`;
 				let followers = `${artists[i].followers.total} Followers`
+				// image placeholder
+				// TODO: replace De Niro
 				let smallImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJz0hYyu3AlzkwJfXn3x_T-vihyySLKYx_3ZcbNfq3TU1ZXb4";
 				let largeImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJz0hYyu3AlzkwJfXn3x_T-vihyySLKYx_3ZcbNfq3TU1ZXb4";
 
@@ -114,6 +134,8 @@ export default class Public extends React.Component {
 
 			for (let j = 0; j < albums.length; j++) {
 				let key = `album${j}`
+				// image placeholder
+				// TODO: replace De Niro
 				let smallImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJz0hYyu3AlzkwJfXn3x_T-vihyySLKYx_3ZcbNfq3TU1ZXb4";
 				let largeImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJz0hYyu3AlzkwJfXn3x_T-vihyySLKYx_3ZcbNfq3TU1ZXb4";
 
@@ -131,9 +153,7 @@ export default class Public extends React.Component {
 					backgroundRepeat: "no-repeat"
 				}
 
-				console.log(artists);
-
-				// TODO: catch this type error
+				// TODO: catch undefined type error
 				// TODO: render multiple artists
 
 				let jsx = <div className="result album" key={key}>
@@ -152,7 +172,8 @@ export default class Public extends React.Component {
 				this.setState({ albumsJsx });
 			}
 
-			// TODO: " "
+			// TODO: catch undefined type error
+			// TODO: render multiple artists
 
 			for (let k = 0; k <= tracks.length - 1; k++) {
 				let key = `track${k}`;

@@ -1,17 +1,18 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const SearchResults = (props) => {
 	return (
 		<div className="searchResults" ref={props.resultsRef}>
-			<div className="searchCategory tracks open">
+			<Link to="/tracks" className="searchCategory tracks open">
 				{props.tracks}
-			</div>
-			<div className="searchCategory artists">
+			</Link>
+			<Link to="/artists" className="searchCategory artists">
 				{props.artists}
-			</div>
-			<div className="searchCategory albums">
+			</Link>
+			<Link to="/albums" className="searchCategory albums">
 				{props.albums}
-			</div>
+			</Link>
 		</div>
 	);
 }

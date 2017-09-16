@@ -46,7 +46,7 @@
 }
 .result:hover {
 	background-color: rgba(0, 0, 0, 0.7);
-	background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+	background: linear-gradient(to right, rgba(91, 136, 246, 0), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0));
 }
 .resultImg, .resultText {
 	/*display: inline-block;*/

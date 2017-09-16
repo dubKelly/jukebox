@@ -55,7 +55,7 @@ export default class Profile extends React.Component {
 
 		  // refresh access_token
 		  const time = (parseInt(tokens.expires_in, 10) - 300) * 1000;	// 5 mins before token expires 
-		  
+
 		  setInterval(() => {
 		  	const body = {
 		  		refresh_token: this.state.tokens.refresh_token
