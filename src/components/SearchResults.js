@@ -2,15 +2,15 @@ import React from "react";
 
 const SearchResults = (props) => {
 	return (
-		<div>
-			<div className="artists">
+		<div className="searchResults" ref={props.resultsRef}>
+			<div className="searchCategory tracks open">
+				{props.tracks}
+			</div>
+			<div className="searchCategory artists">
 				{props.artists}
 			</div>
-			<div className="albums">
+			<div className="searchCategory albums">
 				{props.albums}
-			</div>
-			<div className="tracks">
-				{props.tracks}
 			</div>
 		</div>
 	);

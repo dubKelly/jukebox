@@ -4,6 +4,9 @@
 	background-position: center;
 	background-repeat: no-repeat;
 }
+.search {
+	height: 100%;
+}
 .searchBar {
 	position: relative;
 	left: 50%;
@@ -17,4 +20,48 @@
 	padding: 0 20px;
 	font-size: 18px;
 	color: white;
+}
+.searchResults {
+	height: calc(100% - 129px);
+	overflow: scroll;
+}
+.searchResults::-webkit-scrollbar {
+	width: 0px;
+}
+.searchCategory {
+	display: none;
+}
+.searchCategory.open {
+	display: block;
+}
+.result {
+	position: relative;
+	height: 80px;
+	color: white;
+	margin: 15px 0;
+}
+.resultImg, .resultText {
+	/*display: inline-block;*/
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+.resultImg {
+	height: 60px;
+	width: 60px;
+	left: 20px;
+}
+.resultImg.artist {
+	border-radius: 60px;
+}
+.resultText {
+	width: calc(100% - 110px);
+	left: 100px;
+}
+.resultText.track {
+	width: calc(100% - 80px);
+	left: 40px;
+}
+.resultText h2 {
+	font-weight: 700;
 }

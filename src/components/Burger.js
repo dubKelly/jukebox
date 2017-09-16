@@ -3,13 +3,6 @@ import React from "react";
 import "../css/burger.css";
 
 const Burger = (props) => {
-	// const toggleBurger = (e) => {
-	// 	const burger = e.target.parentNode;
-	// 	const menu = ReactDOM.findDOMNode(Menu);
-	// 	console.log(menu);
-
-	// 	burger.classList.toggle("open");
-	// }
 
 	return (
 		<div className="burger" ref={ props.burgerRef }>

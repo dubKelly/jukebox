@@ -87,14 +87,24 @@ export default class Public extends React.Component {
 					largeImg = artists[i].images[0].url;
 				}
 
-				let jsx = <div className="artist" key={key}>
-										<img 
-											src={smallImg}
-											alt=""
+				const artistStyles = {
+					backgroundImage: `url(${smallImg})`,
+					backgroundSize: "cover",
+					backgroundPosition: "right center",
+					backgroundRepeat: "no-repeat"
+				}
+
+				let jsx = <div className="result artist" key={key}>
+										<div
+											className="resultImg artist"										
+											style={artistStyles}
 											data-largeImg={largeImg}
-										/>
-										<h2>{artists[i].name}</h2>
-										<h3>{followers}</h3>
+										>
+										</div>
+										<div className="resultText">
+											<h2>{artists[i].name}</h2>
+											<h3>{followers}</h3>
+										</div>
 									</div>
 				artistsJsx.push(jsx);
 				this.setState({ artistsJsx });
@@ -112,17 +122,29 @@ export default class Public extends React.Component {
 					largeImg = albums[j].images[0].url;
 				}
 
+				const albumStyles = {
+					backgroundImage: `url(${smallImg})`,
+					backgroundSize: "cover",
+					backgroundPosition: "right center",
+					backgroundRepeat: "no-repeat"
+				}
+
+				console.log(albumStyles);
+
 				// TODO: catch this type error
 				// TODO: render multiple artists
 
-				let jsx = <div className="album" key={key}>
-										<img 
-											src={smallImg}
-											alt=""
+				let jsx = <div className="result album" key={key}>
+										<div
+											className="resultImg"
+											style={albumStyles}
 											data-largeImg={largeImg}
-										/>
-										<h2>{albums[j].name}</h2>
-										<h3>{albums[j].artists[0].name}</h3>
+										>
+										</div>
+										<div className="resultText">
+											<h2>{albums[j].name}</h2>
+											<h3>{albums[j].artists[0].name}</h3>
+										</div>
 									</div>
 				albumsJsx.push(jsx);
 				this.setState({ albumsJsx });
@@ -133,13 +155,15 @@ export default class Public extends React.Component {
 			for (let k = 0; k <= tracks.length - 1; k++) {
 				let key = `track${k}`;
 				let jsx = <div 
-										className="track"
+										className="result track"
 										key={key}
 										data-artistHref={tracks[k].artists[0].href}
 										data-trackHref={tracks[k].href}
 									>
-										<h2>{tracks[k].name}</h2>
-										<h3>{tracks[k].artists[0].name}</h3>
+										<div className="resultText track">
+											<h2>{tracks[k].name}</h2>
+											<h3>{tracks[k].artists[0].name}</h3>
+										</div>
 									</div>
 				tracksJsx.push(jsx);
 				this.setState({ tracksJsx });

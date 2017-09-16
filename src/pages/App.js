@@ -12,9 +12,9 @@ const App = () => {
 	return (
 		<Router>
 			<div className="page">
-				<Route exact path="/" component={ Home } />
-				<Route path="/profile" component={ Profile } />
-				<Route path="/public" component={ Public } />
+				<Route exact path="/" component={Home} />
+				<Route path="/profile" component={Profile} />
+				<Route path="/public" component={Public} />
 			</div>
 		</Router>
 	);
