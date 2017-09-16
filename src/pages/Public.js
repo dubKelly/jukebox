@@ -25,11 +25,13 @@ export default class Public extends React.Component {
 
 		axios.post("http://localhost:8080/api/public", user).then(res => {
 			this.setState({ tokens: res.data }, () => {
-				let time = parseInt(this.state.tokens.expires_by, 10) - (new Date().getTime() / 1000);
-				
+				let time = (parseInt(this.state.tokens.expires_by, 10) - (new Date().getTime() / 1000)) * 100;
+				console.log(time);
 				setInterval(() => {
 					axios.post("http://localhost:8080/api/public", user).then(res => {
 						this.setState({ tokens: res.data });
+						console.log("refesh:");
+						console.log(res.data);
 					});
 				}, time);
 			});
@@ -129,7 +131,7 @@ export default class Public extends React.Component {
 					backgroundRepeat: "no-repeat"
 				}
 
-				console.log(albumStyles);
+				console.log(artists);
 
 				// TODO: catch this type error
 				// TODO: render multiple artists

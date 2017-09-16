@@ -22,7 +22,7 @@
 	color: white;
 }
 .searchResults {
-	height: calc(100% - 129px);
+	height: calc(100% - 139px);
 	overflow: scroll;
 }
 .searchResults::-webkit-scrollbar {
@@ -36,9 +36,17 @@
 }
 .result {
 	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+	max-width: 400px;
 	height: 80px;
 	color: white;
 	margin: 15px 0;
+	cursor: pointer;
+}
+.result:hover {
+	background-color: rgba(0, 0, 0, 0.7);
+	background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
 }
 .resultImg, .resultText {
 	/*display: inline-block;*/

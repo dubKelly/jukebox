@@ -1,6 +1,7 @@
 html, body, #root, .page {
 	height: 100%;
 	font-family: "Raleway", sans-serif;
+
 }
 .container.black {
 	height: 100%;
@@ -9,7 +10,7 @@ html, body, #root, .page {
 }
 .navBar {
 	text-align: center;
-	padding: 5px 0;
+	padding: 5px 0 15px 0;
 }
 .nav {
 	display: inline-block;
