@@ -1,4 +1,4 @@
-.burger, .cover {
+.burger {
 	position: fixed;
 	top: 25px;
 	right: 25px;
@@ -9,6 +9,9 @@
 	z-index: 2;
 }
 .cover {
+	position: absolute;
+	height: 100%;
+	width: 100%;
 	z-index: 3;
 }
 .burger span {

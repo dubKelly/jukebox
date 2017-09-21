@@ -19,8 +19,11 @@ export default class Public extends React.Component {
 			/* display */
 			artistsJsx: [],
 			albumsJsx: [],
+
 			tracksJsx: [],
-			tracks: {}
+			track: {
+				test: "test"
+			},
 		}
 		this.getSearchResults = this.getSearchResults.bind(this);
 	}
@@ -29,6 +32,9 @@ export default class Public extends React.Component {
 		let user = {
 			username: window.location.hostname
 		}
+
+		// TODO: fix interval
+		// time is not updated with new token
 
 		axios.post("http://localhost:8080/api/public", user).then(res => {
 			this.setState({ tokens: res.data }, () => {
@@ -40,6 +46,7 @@ export default class Public extends React.Component {
 						this.setState({ tokens: res.data });
 						console.log("refesh:");
 						console.log(res.data);
+						console.log(time);
 					});
 				}, time);
 			});
@@ -55,14 +62,15 @@ export default class Public extends React.Component {
 					<Route exact path="/public" render={(props) => 
 						<Search {...props}
 							handleChange={this.getSearchResults}
+							tracks={this.state.tracksJsx}
+							tracksClick={this.tracksClick.bind(this)}
 							artists={this.state.artistsJsx}
 							albums={this.state.albumsJsx}
-							tracks={this.state.tracksJsx}
 						/>
 					}/>
-					<Route path="/artists" component={Artists}/>
-					<Route path="/albums" component={Albums}/>
-					<Route path="/tracks" component={Tracks}/>
+					<Route path="/public/artists" component={Artists}/>
+					<Route path="/public/albums" component={Albums}/>
+					<Route path="/public/:data" component={Tracks}/>
 				</div>
 			</div>
 		);
@@ -174,15 +182,18 @@ export default class Public extends React.Component {
 
 			// TODO: catch undefined type error
 			// TODO: render multiple artists
-
+			console.log(tracks);
 			for (let k = 0; k <= tracks.length - 1; k++) {
 				let key = `track${k}`;
 				let jsx = <div 
 										className="result track"
-										key={key}
-										data-artistHref={tracks[k].artists[0].href}
-										data-trackHref={tracks[k].href}
-									>
+										key={key}>
+										<div 
+											className="cover"
+											data-artistHref={tracks[k].artists[0].href}
+											data-trackName={tracks[k].name}
+											data-trackHref={tracks[k].href}>
+										</div>
 										<div className="resultText track">
 											<h2>{tracks[k].name}</h2>
 											<h3>{tracks[k].artists[0].name}</h3>
@@ -191,6 +202,32 @@ export default class Public extends React.Component {
 				tracksJsx.push(jsx);
 				this.setState({ tracksJsx });
 			}
+		});
+	}
+
+	tracksClick(e) {
+		// get artist photo
+		let url = e.target.getAttribute("data-artistHref");
+		let trackName = e.target.getAttribute("data-trackName");
+		let trackHref = e.target.getAttribute("data-trackHref");
+		let body = {
+			headers: { 
+				"Authorization": `Bearer ${this.state.tokens.access_token}`
+			}
+		}
+		console.log("click");
+
+		axios.get(url, body).then(res => {
+			let track = {
+				artistImg: res.data.images[0].url,
+				artistName: res.data.name,
+				trackName,
+				trackHref
+			}
+
+			let data = queryString.stringify(track);
+
+			window.location.href = `http://localhost:3000/public/${data}`
 		});
 	}
 }

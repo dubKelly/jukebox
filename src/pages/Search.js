@@ -30,9 +30,11 @@ export default class Search extends React.Component {
 				<Nav navRef={el => this.navBar = el}/>
 				<SearchResults 
 					resultsRef={el => this.results = el}
+					tracks={this.props.tracks}
+					tracksClick={this.props.tracksClick}
 					artists={this.props.artists}
 					albums={this.props.albums}
-					tracks={this.props.tracks} />
+				/>
 			</div>
 		);
 	}

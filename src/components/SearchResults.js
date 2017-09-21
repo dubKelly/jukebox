@@ -4,9 +4,12 @@ import { Link } from "react-router-dom";
 const SearchResults = (props) => {
 	return (
 		<div className="searchResults" ref={props.resultsRef}>
-			<Link to="/tracks" className="searchCategory tracks open">
+			<div
+				className="searchCategory tracks open"
+				onClick={props.tracksClick}
+			>
 				{props.tracks}
-			</Link>
+			</div>
 			<Link to="/artists" className="searchCategory artists">
 				{props.artists}
 			</Link>
