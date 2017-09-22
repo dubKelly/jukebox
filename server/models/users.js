@@ -7,7 +7,8 @@ var userSchema = new Schema({
 	username: String,
 	access_token: String,
 	refresh_token: String,
-	expires_by: String
+	expires_by: String,
+	requests: Array 
 });
 
 module.exports = mongoose.model('User', userSchema);

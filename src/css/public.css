@@ -49,7 +49,6 @@
 	background: linear-gradient(to right, rgba(91, 136, 246, 0), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0.7), rgba(91, 136, 246, 0));
 }
 .resultImg, .resultText {
-	/*display: inline-block;*/
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
@@ -72,4 +71,31 @@
 }
 .resultText h2 {
 	font-weight: 700;
+}
+.trackContent {
+	position: relative;
+	top: 50%;
+	left: 50%;
+	text-align: center;
+	transform: translate(-50%, -50%);
+}
+.trackName {
+	color: white;
+	font-size: 24px;
+}
+.trackArtist {
+	color: white;
+	font-size: 16px;
+	text-transform: uppercase;
+	text-align: center;
+	margin: 15px 0 45px 0;
+}
+.requestTrack {
+	height: 45px;
+	width: 180px;
+	color: white;
+	font-size: 16px;
+	background-color: #5b88f6;
+	border: none;
+	border-radius: 45px; 
 }

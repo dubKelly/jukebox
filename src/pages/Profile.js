@@ -13,7 +13,11 @@ export default class Profile extends React.Component {
 	constructor() {
 		super();
 		this.state = {
+			user: {
+				username: window.location.hostname
+			},
 			tokens: {},
+			requests: [],
 			profile: {},
 			recentlyPlayed: {},
 			recentlyPlayedJsx: [],
@@ -77,6 +81,15 @@ export default class Profile extends React.Component {
 		  		});
 		  	});
 		  }, time);
+
+		  // get song requests
+		  setInterval(() => {
+
+
+		  	axios.post("http://localhost:8080/api/public", this.state.user).then(res => {
+		  		console.log(res);
+		  	});
+		  }, 10000);
 		}
 	}
 
@@ -115,7 +128,8 @@ export default class Profile extends React.Component {
 	  	username: window.location.hostname,
 	  	access_token: this.state.tokens.access_token,
 	  	refresh_token: this.state.tokens.refresh_token,
-	  	expires_by: expires_by
+	  	expires_by: expires_by,
+	  	requests: this.state.requests
 	  }
 
 	  axios.post("http://localhost:8080/api/users", user).then(res => {

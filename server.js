@@ -146,6 +146,7 @@ router.route("/users").get(function(req, res) {
 			newUser.access_token = req.body.access_token;
 			newUser.refresh_token = req.body.refresh_token;
 			newUser.expires_by = req.body.expires_by;
+			newUser.requests = [];
 
 			newUser.save(function(err) {
 				if (err) {
@@ -159,7 +160,8 @@ router.route("/users").get(function(req, res) {
 				username: req.body.username,
 				access_token: req.body.access_token,
 				refresh_token: req.body.refresh_token,
-				expires_by: req.body.expires_by
+				expires_by: req.body.expires_by,
+				requests: req.body.requests
 			});
 			user.save(function(err, updatedUser) {
 				if (err) {
@@ -173,7 +175,6 @@ router.route("/users").get(function(req, res) {
 
 router.route("/public").post(function(req, res) {
 	var query = { username: req.body.username };
-	console.log(query);
 	
 	User.findOne(query, function(err, user) {
 		if (err) {

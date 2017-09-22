@@ -18,6 +18,7 @@ export default class Tracks extends React.Component {
 	  });
 	  
 	  this.setState({ data });
+	  console.log(data);
 	}
 
 
@@ -30,9 +31,18 @@ export default class Tracks extends React.Component {
 		}
 
 		return (
-			<div className="page" style={styles}>
+			<div className="page track" style={styles}>
 				<div className="container black">
-					<h2 style={{color: "white"}}>{this.state.data.trackName}</h2>
+					<div className="trackContent">
+						<h2 className="trackName">{this.state.data.trackName}</h2>
+						<h3 className="trackArtist">{this.state.data.artistName}</h3>
+						<button 
+							className="requestTrack"
+							data-trackHref={this.state.data.trackHref}
+							onClick={this.props.requestTrack}>
+							Request Song
+						</button>
+					</div>
 				</div>
 			</div>
 		);

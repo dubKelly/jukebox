@@ -14,39 +14,44 @@ export default class Public extends React.Component {
 	constructor() {
 		super();
 		this.state = {
+			user: {
+				username: window.location.hostname
+			},
 			tokens: {},
+			requests: [],
 
 			/* display */
 			artistsJsx: [],
 			albumsJsx: [],
-
 			tracksJsx: [],
-			track: {
-				test: "test"
-			},
 		}
 		this.getSearchResults = this.getSearchResults.bind(this);
 	}
 
 	componentDidMount() {
-		let user = {
-			username: window.location.hostname
-		}
-
 		// TODO: fix interval
 		// time is not updated with new token
 
-		axios.post("http://localhost:8080/api/public", user).then(res => {
-			this.setState({ tokens: res.data }, () => {
+		axios.post("http://localhost:8080/api/public", this.state.user).then(res => {
+			console.log(res.data);
+			const tokens = {
+				access_token: res.data.access_token,
+				expires_by: res.data.expires_by,
+				refresh_token: res.data.refresh_token
+			}
+
+			this.setState({
+				tokens,
+				requests: res.data.requests
+			}, () => {
 				// refresh access_token
 				let time = (parseInt(this.state.tokens.expires_by, 10) - (new Date().getTime() / 1000)) * 1000;
 
 				setInterval(() => {
-					axios.post("http://localhost:8080/api/public", user).then(res => {
-						this.setState({ tokens: res.data });
-						console.log("refesh:");
-						console.log(res.data);
-						console.log(time);
+					axios.post("http://localhost:8080/api/public", this.state.user).then(res => {
+						this.setState({ tokens: res.data },() => {
+							time = time;
+						});
 					});
 				}, time);
 			});
@@ -70,7 +75,11 @@ export default class Public extends React.Component {
 					}/>
 					<Route path="/public/artists" component={Artists}/>
 					<Route path="/public/albums" component={Albums}/>
-					<Route path="/public/:data" component={Tracks}/>
+					<Route path="/public/:data" render={(props) =>
+						<Tracks
+							requestTrack={this.requestTrack.bind(this)}
+						/>
+					}/>
 				</div>
 			</div>
 		);
@@ -228,6 +237,31 @@ export default class Public extends React.Component {
 			let data = queryString.stringify(track);
 
 			window.location.href = `http://localhost:3000/public/${data}`
+		});
+	}
+
+	requestTrack(e) {
+		const trackHref = e.target.getAttribute("data-trackHref");
+
+		axios.post("http://localhost:8080/api/public", this.state.user).then(res => {
+			this.setState({ requests: res.data.requests }, () => {
+				const requests = this.state.requests;
+				requests.push(trackHref);
+
+				let user = {
+			  	username: window.location.hostname,
+			  	access_token: this.state.tokens.access_token,
+			  	refresh_token: this.state.tokens.refresh_token,
+			  	expires_by: this.state.tokens.expires_by,
+			  	requests
+			  }
+
+			  axios.post("http://localhost:8080/api/users", user).then(res => {
+			  	window.location.href = "http://localhost:3000/public";
+			  }).catch(err => {
+			  	console.error(err);
+			  });
+			});
 		});
 	}
 }
